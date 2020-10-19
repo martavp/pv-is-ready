@@ -48,14 +48,14 @@ ax1.text(35, 35, '100% wind & solar electricity', rotation=-45,
 for EUscenario in ['Baseline','EE', 'CIRC', 'ELEC', 'H2', 'P2X', 'COMBO', '1.5TECH', '1.5LIFE', ]:
     ax1.plot(penetration.loc[EUscenario,'solar'], penetration.loc[EUscenario,'wind'], 
              marker='o', markersize=10, color='silver')
-ax1.text(10, 55, 'PRIMES [15]', color='dimgray', fontsize=12)
+ax1.text(10, 55, 'PRIMES [19]', color='dimgray', fontsize=12)
 
 #PRIMES (Stepping-up)
 
 for EUscenario in ['BSL','REG', 'MIX', 'CPRICE', 'ALLBNK' ]:
     ax1.plot(penetration.loc[EUscenario,'solar'], penetration.loc[EUscenario,'wind'], 
              marker='o', markersize=10, color='dimgray')
-ax1.text(15, 38, 'PRIMES [16]', color='dimgray', fontsize=12)
+ax1.text(15, 38, 'PRIMES [20]', color='dimgray', fontsize=12)
 
 
 #ENTSOE
