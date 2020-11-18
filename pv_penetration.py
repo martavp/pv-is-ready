@@ -78,7 +78,8 @@ colors={'Spain': 'firebrick',
         'Italy':'yellowgreen',
         'Australia':'green',
         'Hawaii':'brown',
-        'Chile':'violet'}
+        'Chile':'violet',
+        'South Australia':'darkcyan'}
 xpos={  
         'Spain': 0,
         'Germany': 0,       
@@ -91,12 +92,13 @@ xpos={
         'Italy':0,
         'Australia':0,
         'Hawaii':0,
-        'Chile':0}
+        'Chile':0,
+        'South Australia':0}
 
 ypos={  
         'Spain': 0,
         'Germany': 0.4,       
-        'California': 0,
+        'California': -0.5,
         'UK':0.7,
         'Honduras':0.1,
         'China':0,
@@ -105,7 +107,8 @@ ypos={
         'Italy':0,
         'Australia':-0.1,
         'Hawaii':-0.3,
-        'Chile':-0.4}
+        'Chile':-0.4,
+        'South Australia':-0.3}
 
 countries=[
            'China',
@@ -119,7 +122,8 @@ countries=[
            'Italy',
            'Spain',
            'Hawaii',
-           'Chile']
+           'Chile',
+           'South Australia']
 face_colors={}
 markeredgewidth={}
 scale=4

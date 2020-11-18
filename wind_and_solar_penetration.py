@@ -8,9 +8,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 
-
-
-
 plt.style.use('seaborn-ticks')
 plt.rcParams['axes.labelsize'] = 14
 plt.rcParams['legend.fontsize'] = 14
@@ -29,7 +26,6 @@ ax1 = plt.subplot(gs1[0,0])
 
 penetration=pd.read_csv('data/solar_wind_penetration.csv', 
                        index_col=0, sep=',')
-
 
 ax1.spines['right'].set_visible(False)
 ax1.spines['top'].set_visible(False)
@@ -51,7 +47,6 @@ for EUscenario in ['Baseline','EE', 'CIRC', 'ELEC', 'H2', 'P2X', 'COMBO', '1.5TE
 ax1.text(10, 55, 'PRIMES [19]', color='dimgray', fontsize=12)
 
 #PRIMES (Stepping-up)
-
 for EUscenario in ['BSL','REG', 'MIX', 'CPRICE', 'ALLBNK' ]:
     ax1.plot(penetration.loc[EUscenario,'solar'], penetration.loc[EUscenario,'wind'], 
              marker='o', markersize=10, color='dimgray')
@@ -68,7 +63,7 @@ ax1.plot(penetration.loc['BNEF','solar'], penetration.loc['BNEF','wind'],
              marker='s', markersize=10, 
              markeredgecolor=color_2,
              markerfacecolor='white')     
-ax1.text(20, 20, 'BNEF', color=color_2, fontsize=12)
+ax1.text(20, 28.5, 'BNEF', color=color_2, fontsize=12)
 
 #Victoria
 ax1.plot(penetration.loc['Victoria','solar'], penetration.loc['Victoria','wind'], 

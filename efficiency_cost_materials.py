@@ -8,16 +8,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
-"""
-
-2. Consumo de plata histórico
-3. Predicción de potencia FV de Haegel
-4. Perdicción de potencia FV de IAM
-(después mirar qué es repesenta renewable primary energy)
-5. Revisar precio futuro de PV de IAM y de NREL ¿incluyen lo mismo?
-¿precio de módulo o del sistema?
-
-"""
+idx = pd.IndexSlice
 
 plt.style.use('seaborn-ticks')
 plt.rcParams['axes.labelsize'] = 14
@@ -27,168 +18,146 @@ plt.rcParams['xtick.direction'] = 'in'
 plt.rcParams['ytick.direction'] = 'in'
 plt.rcParams['axes.titlesize'] = 14
 
-
-efficiency=pd.read_csv('data/module_efficiency_historical.csv', 
-                       index_col=0, sep=',')
-cost=pd.read_csv('data/cost_historical.csv', sep=',')
-
-future_cost_NREL=pd.read_csv('data/NREL_ATB2020.csv', sep=',')
-#%%
 plt.figure(figsize=(20, 10))
-
 gs1 = gridspec.GridSpec(2, 4)
 gs1.update(wspace=0.4, hspace=0.3)
 color_1='firebrick'
 color_2='grey'
-# A) FIGURE CAPACITY FORECAST
 
-EJ2PWh=0.2778 # EJ -> PWh 
-kW2kWh=1370 #kWh->kW 
+"""
+FIGURE A) SOLAR ELECTRICITY IN 2050
+"""
 ax0 = plt.subplot(gs1[0,0])
+EJ2PWh=0.2778 # EJ -> PWh 
+kW2kWh=1370 #kWh->kW
 
-ax0.set_ylabel('Global supply in 2050 (PWh/year)', fontsize=14)    
+year='2050'
+region='World'
+
+data_to_plot=[]
+for i,document in enumerate(['IPCC_AR5', 'IPCC_SR1.5']):
+    if document=='IPCC_AR5':
+        #https://tntcat.iiasa.ac.at/AR5DB/
+        fn = "data_IAM/ar5_public_version102_compare_compare_20150629-130000.csv"   
+
+    if document=='IPCC_SR1.5':
+        #https://data.ene.iiasa.ac.at/iamc-1.5c-explorer/
+        fn="data_IAM/iamc15_scenario_data_world_r2.0.csv"
+    
+    df = pd.read_csv(fn, encoding="latin-1")
+    df = df.set_index(['MODEL', 'SCENARIO', 'REGION', 'VARIABLE', 'UNIT']).sort_index()
+    scenarios = df.index.get_level_values('SCENARIO').unique()
+
+    # drop scenarios that do not include Solar Electricity
+    scenarios_clean=scenarios
+    for scenario in scenarios:
+        scenario_df=df.loc[idx[:,scenario,region,:],year].unstack(['VARIABLE','UNIT'])
+        try: 
+            scenario_df['Secondary Energy|Electricity|Solar']
+        except:
+            scenarios_clean=[s for s in scenarios_clean if s not in [scenario]]           
+    solar_generation=[]
+    for scenario in scenarios_clean:    
+        scenario_df=df.loc[idx[:,scenario,region,:],year].unstack(['VARIABLE','UNIT'])
+        solar_generation = solar_generation + [s for s in scenario_df['Secondary Energy|Electricity|Solar']['EJ/yr'].values]
+        
+    solar_generation = [EJ2PWh*s for s in solar_generation if str(s) != 'nan']
+
+    data_to_plot.append(solar_generation)
+
+ax0.set_ylabel('Global PV electricity in 2050 (PWh/year)', fontsize=14)    
 
 #Haegel_2019
-ax0.plot([1, 1], 
-          [x*kW2kWh/1000 for x in [30,70]], #[23.1,80.9]], 
+ax0.plot([3, 3], 
+          [x*kW2kWh/1000 for x in [30,70]], 
           color=color_1, 
           linewidth=4, 
           marker='_',
           markersize=14)
 
 #Breyer
-ax0.plot([2, 2], 
+ax0.plot([4, 4], 
           [x*kW2kWh/1000 for x in [22,63.4]],
           color=color_1, 
           linewidth=4, 
           marker='_',
           markersize=14,)
 
-#Creutzig
-ax0.plot([3, 3], 
-          [x*EJ2PWh for x in [8, 35]], 
-          color='black', 
-          linewidth=4, 
-          marker='_',
-          markersize=14,
+parts=ax0.violinplot(data_to_plot, 
+                     showmedians=False, 
+                     showextrema=False, 
+                     widths=0.7 )
 
-)
+for pc in parts['bodies']:
+    pc.set_facecolor('gray')
+    pc.set_edgecolor('black')
+    pc.set_alpha(1)
+    
 
-ax0.plot([4, 4], 
-          [x*EJ2PWh for x in [67, 130]], 
-          color='black', 
-          linewidth=4, 
-          marker='_',
-          markersize=14)
+# #Creutzig
+# ax0.plot([3, 3], 
+#           [x*EJ2PWh for x in [8, 35]], 
+#           color='black', 
+#           linewidth=4, 
+#           marker='_',
+#           markersize=14,
 
-#van Vuuren
-ax0.plot([5, 5], 
-         [x*EJ2PWh for x in [32, 135]], 
-          color='black', 
-          linewidth=4, 
-          marker='_',
-          markersize=14)
+# )
 
-#Roglej
-ax0.plot([6, 6], 
-         [x*EJ2PWh for x in [89, 230]], 
-          color='black',
-          linewidth=4, 
-          marker='_',
-          markersize=14)
-ax0.plot([7, 7], 
-         [x*EJ2PWh for x in [20, 300]], 
-          color='black', 
-          linewidth=4, 
-          marker='_',
-          markersize=14,
-          linestyle='dotted')
+# ax0.plot([4, 4], 
+#           [x*EJ2PWh for x in [67, 130]], 
+#           color='black', 
+#           linewidth=4, 
+#           marker='_',
+#           markersize=14)
+
+# #van Vuuren
+# ax0.plot([5, 5], 
+#          [x*EJ2PWh for x in [32, 135]], 
+#           color='black', 
+#           linewidth=4, 
+#           marker='_',
+#           markersize=14)
+
+# #Roglej
+# ax0.plot([6, 6], 
+#          [x*EJ2PWh for x in [89, 230]], 
+#           color='black',
+#           linewidth=4, 
+#           marker='_',
+#           markersize=14)
+# ax0.plot([7, 7], 
+#          [x*EJ2PWh for x in [20, 300]], 
+#           color='black', 
+#           linewidth=4, 
+#           marker='_',
+#           markersize=14,
+#           linestyle='dotted')
 
 
 ax0.text(0.45, 1.01, 'A', transform=ax0.transAxes, fontsize=14)
-ax0.set_xticks([1, 2, 3, 4, 5, 6, 7])
-ax0.set_xticklabels(['PV \n[4]', 'PV \n[53, \n63]', 'PV \n[39]', 'PV \n[8]', 'PV+ \nwind \n[7]', 
-                     'PV+ \nwind+ \nhydro \n[6]', '     BECCS \n[6]' ], fontsize=12)# , rotation=30, ha="right")
-ax0.annotate('IAMs', xy=(0.65, 0.89), xytext=(0.65, 0.94), xycoords='axes fraction', 
-            fontsize=12, ha='center', va='bottom',
-            #bbox=dict(boxstyle='square', fc='white'),
-            arrowprops=dict(arrowstyle='-[, widthB=6.0, lengthB=0.5', lw=2.0))
+ax0.set_xticks([1, 2, 3, 4])
+ax0.set_xticklabels(['IPCC \n5$^{th}$AR \n[ref]', 
+                     'IPCC \nSR1.5$^{\circ}$C \n[ref]', 
+                     'Haegel \n[ref]', 
+                     'Breyer \n[ref]', ], fontsize=12)
+
+# ax0.annotate('IAMs', xy=(0.65, 0.89), xytext=(0.65, 0.94), 
+#             xycoords='axes fraction', 
+#             fontsize=12, ha='center', va='bottom',
+#             #bbox=dict(boxstyle='square', fc='white'),
+#             arrowprops=dict(arrowstyle='-[, widthB=6.0, lengthB=0.5', lw=2.0))
 ax0.set_ylim([0, 100])
+
 #%%
-
-# TWh2EJ=1/277.8 # TWh -> EJ
-# ax0.fill_between([2028,2050], 
-#                  [x*kW2kWh*TWh2EJ for x in [23.1,80.9]], 
-#                  [x*kW2kWh*TWh2EJ for x in [23.1,33.9]],
-#                  color=color_1, alpha=0.3, 
-#                  label='Solar PV (Haegel 2019)')
-
-# ax0.fill_between([2016, 2030, 2050], 
-#                  [x*kW2kWh*TWh2EJ for x in [0.29, 3.2, 8.5]], 
-#                  [x*kW2kWh*TWh2EJ for x in [0.29, 2, 4.5]],
-#                  color='blue', alpha=0.3, 
-#                  label='Solar PV (IRENA)')
-# ax0.plot([2050, 2050], 
-#          [67, 130], 
-#          color='blue', 
-#          linewidth=6, 
-#          label='Creutzig 2017')
-# SSPS=['1', '2']
-# for SSP in SSPS:
-#     SSPdata=pd.read_csv('data/Rogelj_2018/SSP{}_1.9.csv'.format(SSP), sep=',')
-#     ax0.fill_between(SSPdata['year'], 
-#                      SSPdata['high'], 
-#                      SSPdata['low'],
-#                  color='black', alpha=0.3, 
-#                  label='non-biomass renewable (Rogelj 2018)')
-# ax0.legend(fancybox='true', 
-#            fontsize=12, 
-#            loc='best', 
-#            facecolor='white', 
-#            frameon=True)
-# ax0.set_xlim([2000, 2050])
-
-
-
-# ax0 = plt.subplot(gs1[0,0])
-# ax0.set_ylabel('Global energy (EJ/year)', fontsize=14)    
-# kW2kWh=1370 #kWh->kW 
-# TWh2EJ=1/277.8 # TWh -> EJ
-# ax0.fill_between([2028,2050], 
-#                  [x*kW2kWh*TWh2EJ for x in [23.1,80.9]], 
-#                  [x*kW2kWh*TWh2EJ for x in [23.1,33.9]],
-#                  color=color_1, alpha=0.3, 
-#                  label='Solar PV (Haegel 2019)')
-
-# ax0.fill_between([2016, 2030, 2050], 
-#                  [x*kW2kWh*TWh2EJ for x in [0.29, 3.2, 8.5]], 
-#                  [x*kW2kWh*TWh2EJ for x in [0.29, 2, 4.5]],
-#                  color='blue', alpha=0.3, 
-#                  label='Solar PV (IRENA)')
-# ax0.plot([2050, 2050], 
-#          [67, 130], 
-#          color='blue', 
-#          linewidth=6, 
-#          label='Creutzig 2017')
-# SSPS=['1', '2']
-# for SSP in SSPS:
-#     SSPdata=pd.read_csv('data/Rogelj_2018/SSP{}_1.9.csv'.format(SSP), sep=',')
-#     ax0.fill_between(SSPdata['year'], 
-#                      SSPdata['high'], 
-#                      SSPdata['low'],
-#                  color='black', alpha=0.3, 
-#                  label='non-biomass renewable (Rogelj 2018)')
-# ax0.legend(fancybox='true', 
-#            fontsize=12, 
-#            loc='best', 
-#            facecolor='white', 
-#            frameon=True)
-# ax0.set_xlim([2000, 2050])
-# ax0.text(0.9, 0.9, 'A)', transform=ax0.transAxes, fontsize=14)
-
+"""
+FIGURE D) PAST AND FUTURE EFFICIENCY EVOLUTION
+"""
 # past efficiency: Fraunhofer PV report
 # future efficiency: ITPV roadmap
-
+efficiency=pd.read_csv('data/module_efficiency_historical.csv', 
+                       index_col=0, sep=',')
+cost=pd.read_csv('data/cost_historical.csv', sep=',')
 ax1 = plt.subplot(gs1[1,0])
 
 ax1.plot(efficiency.index, 100*efficiency['multi'],
@@ -236,9 +205,6 @@ ax1.text(2032, 26.5, '?',
 ax1.text(2027, 27, 'multijunction \n   perovskite', 
          fontsize=14,
              color=color_1)
-# ax1.text(2021, 22, 'bifacial', 
-#          fontsize=14,
-#              color=color_1)
 ax1.set_xlim([2005, 2040])
 ax1.legend(fancybox='true', 
            fontsize=12, 
@@ -262,35 +228,25 @@ ax2.set_ylim(0.1,200)
 ax2.set_xlim(0.01, 10000000)
 ax2.set_yticks([0.1, 1, 10, 100])
 ax2.set_yticklabels(['0.1', '1', '10', '100'])
-# ax2.set_xticks([0.01, 1, 100, 10000, 1000000])
-# ax2.set_xticklabels(['0.01', '10', '100', '10000', '1000000'])
 ax2.plot([0.2, 1200000],[150, 0.18], linewidth=1, color='black')
 ax2.plot([8000, 1200000],[6, 0.16], linewidth=1, color='dimgray')
 ax2.text(0.45, 1.01, 'B', transform=ax2.transAxes, fontsize=14)
 ax2.text(500, 1.1, '23%', fontsize=14)
 ax2.text(200000, 1.1, '40%', fontsize=14, color='dimgray')
-#ax2.set_xlim([0.01, 2000000])
+
 #%%
-# C) COST FORECAST
-# IAM cost assumption:
-# NREL cost assumption:
+"""
+FIGURE C) COST FORECAST
+"""
+
+# IAM cost assumption: Krey 2019
 # IRENA: average cost 995€/kW, cost in USA 1221 €/kW
 
 ax3 = plt.subplot(gs1[0,2])
 
-# ax3.plot(future_cost_NREL['year'], 
-#          future_cost_NREL['Conservative']/1000,
-#          linewidth=3, color=color_1, linestyle='dashed')
-# ax3.plot(future_cost_NREL['year'], 
-#          future_cost_NREL['Moderate']/1000,
-#          linewidth=3, color=color_1, linestyle='dotted')
-# ax3.plot(future_cost_NREL['year'], 
-#          future_cost_NREL['Advanced']/1000,
-#          linewidth=3, color=color_1, linestyle='dashdot')
-
-
-IAMS=['DIW', 'AIM_E_INDIA', 'DNE21+V.12A', 'EIA', 'GCAM4.2_ADVANCE', 'IEA', 'IMAGE3.0', 
-      'MESSAGE ix-GLOBIOM_1.0', 'REMIND1.6', 'IPAC-AIM_technology_V1.0', 'GEM_E3', ]
+IAMS=['DIW', 'AIM_E_INDIA', 'DNE21+V.12A', 'EIA', 'GCAM4.2_ADVANCE', 'IEA', 
+      'IMAGE3.0', 'MESSAGE ix-GLOBIOM_1.0', 'REMIND1.6', 
+      'IPAC-AIM_technology_V1.0', 'GEM_E3', ]
 marker_IAM={'DIW':'|',
             'AIM_E_INDIA': 's', 
             'DNE21+V.12A': '*', 
@@ -310,7 +266,7 @@ for IAM in IAMS:
     ax3.plot(IAM_cost.index, IAM_cost[1]*USD2010_to_USD2019/1000,
            linewidth=1, color='black', marker=marker_IAM[IAM], label=label)
     
-#A clean planet for all
+#PRIMES (A clean planet for all)
 ax3.plot([2020, 2030, 2040, 2050], 
           [x/1000 for x in [690, 627, 455, 407]],
           linewidth=3, color=color_2, linestyle='solid', label=None)
@@ -326,19 +282,7 @@ ax3.plot([2020,2030, 2040, 2050],
 ax3.plot([2020, 2025, 2030, 2035, 2040, 2045, 2050], 
           [x/1000 for x in [431, 333, 275, 235, 204, 181, 164]],
           linewidth=3, color=color_1,label='Vartiainen 2019')
-#irena
-# ax3.plot([2019, 2019, 2019], 
-#           #[995/1000],
-#           #[618/1000, 2117/1000],
-#          [618/1000, 995/1000, 1404/1000],
-#           linewidth=2, 
-#           marker='_',
-#           color=color_1,label='IRENA 2019')
-# ax3.plot([2019], 
-#           [2117/1000],
-#           linewidth=0, 
-#           marker='s',
-#           color=color_1,label=None)
+#IRENA
 ax3.plot([2019], 
           [995/1000],
           linewidth=0, 
@@ -361,18 +305,7 @@ ax3.text(0.45, 1.01, 'C', transform=ax3.transAxes, fontsize=14)
 ax3.set_ylim([0, 3.3 ])
 ax3.set_yticks([0, 1, 2 ,3])
 ax3.set_yticklabels(['0','1','2','3'])
-#ax3.set_xlim([2020, 2050])
-# ax3.legend(fancybox='true', 
-#            fontsize=14, 
-#            loc=(1.05,.01), 
-#            facecolor='white', 
-#            frameon=True)
-# ax3.annotate('IAMs', xy=(2030, 2), xytext=(2040, 2.5), fontsize=12,
-#             arrowprops=dict(color='black', headwidth=0.1, width=0.1),)   
-# ax3.annotate('', xy=(2040, 1.5), xytext=(2040, 2.5), fontsize=12,
-#             arrowprops=dict(color='black', headwidth=0.1,width=0.1))
-# ax3.annotate('', xy=(2035, 1.6), xytext=(2040, 2.5), fontsize=12,
-#             arrowprops=dict(color='black', headwidth=0.1,width=0.1))
+
 ax3.text(2040, 2.2, 'IAMs', fontsize=12)
 ax3.annotate('PRIMES', xy=(2038, 0.6), xytext=(2042, 0.75), color=color_2,
             arrowprops=dict(color=color_2, headwidth=0.1, width=0.1),)
@@ -380,48 +313,39 @@ ax3.annotate('PRIMES', xy=(2038, 0.6), xytext=(2042, 0.75), color=color_2,
 ax3.annotate('ITPV', xy=(2030, 0.25), xytext=(2020, 0.1), color=color_1,
              arrowprops=dict(color=color_1, headwidth=0.1, width=0.1))
 
+"""
+FIGURE F) USE OF SILVER
+"""
 
-# E) USE OF SILVER
 # PV Capacity: BP
-# Silver consumption:
-
+# Silver consumption: Silver Institute report 2020
 excel = pd.read_excel('data/bp-stats-review-2020-all-data.xlsx', 
                               sheet_name='Solar Capacity',
                               index_col=0, header=0, squeeze=True) 
  
 capacity=0.001*excel.loc['Total World'][0:24] #MW -> GW
 capacity.index=[int(x) for x in excel.loc['Megawatts'][0:24]]
-capacity.loc[2019]=600 #update 2016 capacity
+capacity.loc[2019]=600 #update 2019 capacity
 annual_capacity=capacity.diff()
 
 silver=pd.read_csv('data/silver_demand.csv', 
                        header=None, index_col=0, sep=',')
 ax4 = plt.subplot(gs1[1,2])
 
-# ax4.plot(years[9:], capacity[9:]/capacity[14],
-#            linewidth=3, color=color_1)
-# ax4.set_ylabel('Global PV capacity (relative to 2010)', color=color_1, fontsize=14)    
-# ax5 = ax4.twinx() 
-# ax5.plot(silver.index, silver[1]/silver[1][2010],
-#            linewidth=3, color='black')
-# ax5.set_ylabel('Silver consumption for PV (relative to 2010)', fontsize=14) 
-# ax4.spines['left'].set_color(color_1)
-# ax5.spines['left'].set_color(color_1)
-# ax4.tick_params(axis='y', colors=color_1)
-# ax4.text(0.9, 0.9, 'E)', transform=ax4.transAxes, fontsize=14)
-# ax4.set_ylim([0,15])
-# ax5.set_ylim([0,15])
 ounce2kg=0.028349523125 # million ounce -> kilo-metric ton (ounce -> kg)
 ax4.plot(silver.index[1:], [ounce2kg*1000*silver.loc[year][1]/annual_capacity[year] for year in silver.index[1:]],
             linewidth=3, color=color_1)
 ax4.set_xlim([2005,2020])
 #million ounces / Gw -> ounces/kW
-ax4.set_ylabel('Silver consumption / PV capacity \n (kg/MW)',  fontsize=14)   
+ax4.set_ylabel('Silver consumption / PV capacity \n (mg/W)',  fontsize=14)   
 ax4.grid(color='grey', linestyle='--', axis='y', which='both')
 ax4.text(0.45, 1.01, 'F', transform=ax4.transAxes, fontsize=14)
 
-ax5 = plt.subplot(gs1[1,1])
+"""
+FIGURE E) AGE OF INSTALLED PV POWER PLANTS
+"""
 
+ax5 = plt.subplot(gs1[1,1])
 ax5.bar(range(len(annual_capacity)), 
               annual_capacity, 
               width=0.8,
