@@ -10,8 +10,8 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 idx = pd.IndexSlice
 
-document='IPCC_SR1.5'
-option='electricity'
+document='IPCC_AR5'
+option='primary energy'
 year='2050'
 region='World'
 # temp threshold, only plots scenario with lower tempt
@@ -130,9 +130,9 @@ for scenario in scenarios_clean:
 print('average solar penetration = ' + str(np.array(solar_ratio).mean())+ ' %')
 print('average wind penetration = ' + str(np.array(wind_ratio).mean())+ ' %')
 print('number of scenarios included = '+ str(len([s for s in solar_ratio if str(s) != 'nan'])))
-ax1.text(55,79,document + ' ' + option, fontsize=16)
-ax1.text(55,75,'average solar = ' + str(np.array(solar_ratio).mean().round(1))+ ' %', fontsize=16)
-ax1.text(55,71,'average wind = ' + str(np.array(wind_ratio).mean().round(1))+ ' %', fontsize=16)
+# ax1.text(55,79,document + ' ' + option, fontsize=16)
+# ax1.text(55,75,'average solar = ' + str(np.array(solar_ratio).mean().round(1))+ ' %', fontsize=16)
+# ax1.text(55,71,'average wind = ' + str(np.array(wind_ratio).mean().round(1))+ ' %', fontsize=16)
 
 #%%
 if option=='electricity':
@@ -144,7 +144,11 @@ if option=='electricity':
 penetration=pd.read_csv('data/solar_wind_electricity_penetration.csv', 
                        index_col=0, sep=',')
 if option=='electricity':
+    if document=='IPCC_AR5':
+        ax1.text(18, 8, 'IPCC 5$^{th}$AR', color='dimgray', fontsize=12)
     
+    if document=='IPCC_SR1.5':
+        ax1.text(18, 8, 'IPCC SR 1.5$^{\circ}$C', color='dimgray', fontsize=12)
     #PRIMES (Clean energy for all Europeans)
     for EUscenario in ['Baseline','EE', 'CIRC', 'ELEC', 'H2', 'P2X', 'COMBO', '1.5TECH', '1.5LIFE', ]:
         ax1.plot(penetration.loc[EUscenario,'solar'], penetration.loc[EUscenario,'wind'], 
@@ -180,32 +184,47 @@ if option=='electricity':
     #Victoria
     ax1.plot(penetration.loc['Victoria','solar'], penetration.loc['Victoria','wind'], 
                   marker='o', markersize=10, color=color_1) 
-    ax1.text(40, 42, 'Victoria', color=color_1, fontsize=12)
+    ax1.text(40, 42, 'Victoria [ref]', color=color_1, fontsize=12)
 
     #Child
     ax1.plot(penetration.loc['Child','solar'], penetration.loc['Child','wind'], 
               marker='o', markersize=10,  markeredgecolor=color_1,
-                  markerfacecolor='white') 
-    ax1.text(42, 31, 'Child', color=color_1, fontsize=12)
+                  markerfacecolor=color_1) 
+    ax1.text(41, 31, 'Child [ref]', color=color_1, fontsize=11)
 
     #Bogdanov
     ax1.plot(penetration.loc['Bogdanov','solar'], penetration.loc['Bogdanov','wind'], 
                   marker='s', markersize=10, 
                   markeredgecolor=color_1,
                   markerfacecolor='white') 
-    ax1.text(62, 16, 'Bogdanov', color=color_1, fontsize=12)
+    ax1.text(62, 16, 'Bogdanov [ref]', color=color_1, fontsize=12)
    
     #Solar Power Europe
     ax1.plot(penetration.loc['SolarPower','solar'], penetration.loc['SolarPower','wind'], 
                   marker='o', markersize=10, 
                   markeredgecolor=color_1,
+                  markerfacecolor=color_1) 
+    ax1.text(57.5, 29, 'SPE [ref]', color=color_1, fontsize=12)
+    
+    
+    #Pursiheimo
+    ax1.plot(penetration.loc['Pursiheimo','solar'], penetration.loc['Pursiheimo','wind'], 
+                  marker='s', markersize=10, 
+                  markeredgecolor='black',
                   markerfacecolor='white') 
-    ax1.text(58.5, 29, 'SPE', color=color_1, fontsize=12)
+    ax1.text(69, 8, 'Pursiheimo [ref]', color='black', fontsize=12)
+    
+    #Jacobson
+    ax1.plot(penetration.loc['Jacobson','solar'], penetration.loc['Jacobson','wind'], 
+                  marker='s', markersize=10, 
+                  markeredgecolor='black',
+                  markerfacecolor='white') 
+    ax1.text(42, 33.5, 'Jacobson [ref]', color='black', fontsize=11)
     
     #Creutzig
     ax1.annotate("", xy=(30, 4), xytext=(50,4),
                  arrowprops=dict(arrowstyle="<->", color='black'))
-    ax1.text(34.5, 5, 'Creutzig', color='black', fontsize=12)
+    ax1.text(32, 1.5, 'Creutzig [ref]', color='black', fontsize=12)
 
 
 plt.savefig('figures/pv_and_wind_in_IAM_' + option + '_' + document + '.png', dpi=300, bbox_inches='tight')

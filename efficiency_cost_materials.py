@@ -67,8 +67,17 @@ for i,document in enumerate(['IPCC_AR5', 'IPCC_SR1.5']):
 
 ax0.set_ylabel('Global PV electricity in 2050 (PWh/year)', fontsize=14)    
 
+
+#Kurtz_Revisiting the Terawatt challenge
+ax0.plot([3], 
+          [x*kW2kWh/1000 for x in [37]], 
+          color=color_1, 
+          linewidth=4, 
+          marker='*',
+          markersize=14)
+
 #Haegel_2019
-ax0.plot([3, 3], 
+ax0.plot([4, 4], 
           [x*kW2kWh/1000 for x in [30,70]], 
           color=color_1, 
           linewidth=4, 
@@ -76,12 +85,13 @@ ax0.plot([3, 3],
           markersize=14)
 
 #Breyer
-ax0.plot([4, 4], 
+ax0.plot([5, 5], 
           [x*kW2kWh/1000 for x in [22,63.4]],
           color=color_1, 
           linewidth=4, 
           marker='_',
           markersize=14,)
+
 
 parts=ax0.violinplot(data_to_plot, 
                      showmedians=False, 
@@ -94,59 +104,15 @@ for pc in parts['bodies']:
     pc.set_alpha(1)
     
 
-# #Creutzig
-# ax0.plot([3, 3], 
-#           [x*EJ2PWh for x in [8, 35]], 
-#           color='black', 
-#           linewidth=4, 
-#           marker='_',
-#           markersize=14,
-
-# )
-
-# ax0.plot([4, 4], 
-#           [x*EJ2PWh for x in [67, 130]], 
-#           color='black', 
-#           linewidth=4, 
-#           marker='_',
-#           markersize=14)
-
-# #van Vuuren
-# ax0.plot([5, 5], 
-#          [x*EJ2PWh for x in [32, 135]], 
-#           color='black', 
-#           linewidth=4, 
-#           marker='_',
-#           markersize=14)
-
-# #Roglej
-# ax0.plot([6, 6], 
-#          [x*EJ2PWh for x in [89, 230]], 
-#           color='black',
-#           linewidth=4, 
-#           marker='_',
-#           markersize=14)
-# ax0.plot([7, 7], 
-#          [x*EJ2PWh for x in [20, 300]], 
-#           color='black', 
-#           linewidth=4, 
-#           marker='_',
-#           markersize=14,
-#           linestyle='dotted')
-
 
 ax0.text(0.45, 1.01, 'A', transform=ax0.transAxes, fontsize=14)
-ax0.set_xticks([1, 2, 3, 4])
+ax0.set_xticks([1, 2, 3, 4, 5])
 ax0.set_xticklabels(['IPCC \n5$^{th}$AR \n[ref]', 
                      'IPCC \nSR1.5$^{\circ}$C \n[ref]', 
+                     'Kurtz \n[ref]',
                      'Haegel \n[ref]', 
-                     'Breyer \n[ref]', ], fontsize=12)
+                     'Breyer \n[ref]',], fontsize=12)
 
-# ax0.annotate('IAMs', xy=(0.65, 0.89), xytext=(0.65, 0.94), 
-#             xycoords='axes fraction', 
-#             fontsize=12, ha='center', va='bottom',
-#             #bbox=dict(boxstyle='square', fc='white'),
-#             arrowprops=dict(arrowstyle='-[, widthB=6.0, lengthB=0.5', lw=2.0))
 ax0.set_ylim([0, 100])
 
 #%%
@@ -199,13 +165,13 @@ ax1.grid(color='grey', linestyle='--', axis='y', which='both')
 ax1.set_ylabel('Efficiency (%)', fontsize=14)    
 ax1.set_ylim(12,30)
 ax1.set_xlim(2005, 2045)
-ax1.text(2032, 26.5, '?', 
+ax1.text(2027, 26.5, '?', 
          fontsize=60,
          color='silver')
-ax1.text(2027, 27, 'multijunction \n   perovskite', 
+ax1.text(2023, 27, 'multijunction \n   perovskite', 
          fontsize=14,
              color=color_1)
-ax1.set_xlim([2005, 2040])
+ax1.set_xlim([2005, 2035])
 ax1.legend(fancybox='true', 
            fontsize=12, 
            loc='upper left', 
@@ -275,9 +241,9 @@ ax3.plot([2020, 2030, 2040, 2050],
           linewidth=3, color=color_2, linestyle='dashed', label='PRIMES')
 
 #ITPV 2017
-ax3.plot([2020,2030, 2040, 2050], 
-          [x/1000 for x in [573, 391, 302, 246]],
-          linewidth=3, color=color_1, label='ITPV2017')
+# ax3.plot([2020,2030, 2040, 2050], 
+#           [x/1000 for x in [573, 391, 302, 246]],
+#           linewidth=3, color=color_1, label='ITPV2017')
 #Breyer
 ax3.plot([2020, 2025, 2030, 2035, 2040, 2045, 2050], 
           [x/1000 for x in [431, 333, 275, 235, 204, 181, 164]],
@@ -307,7 +273,7 @@ ax3.set_yticks([0, 1, 2 ,3])
 ax3.set_yticklabels(['0','1','2','3'])
 
 ax3.text(2040, 2.2, 'IAMs', fontsize=12)
-ax3.annotate('PRIMES', xy=(2038, 0.6), xytext=(2042, 0.75), color=color_2,
+ax3.annotate('PRIMES', xy=(2038, 0.6), xytext=(2042, 0.7), color=color_2,
             arrowprops=dict(color=color_2, headwidth=0.1, width=0.1),)
 
 ax3.annotate('ITPV', xy=(2030, 0.25), xytext=(2020, 0.1), color=color_1,
