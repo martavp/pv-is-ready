@@ -240,14 +240,23 @@ ax3.plot([2020, 2030, 2040, 2050],
           [x/1000 for x in [721, 690, 567, 495]],
           linewidth=3, color=color_2, linestyle='dashed', label='PRIMES')
 
-#ITPV 2017
+#ETIP-PV 2017
 # ax3.plot([2020,2030, 2040, 2050], 
 #           [x/1000 for x in [573, 391, 302, 246]],
-#           linewidth=3, color=color_1, label='ITPV2017')
-#Breyer
+#           linewidth=3, color=color_1, label='ETIP-PV2017')
+
+
+#ITRPV 2020
+Dollar2Euro=0.82
+ax3.plot([2020, 2024, 2027, 2030], 
+           [Dollar2Euro*x/1000 for x in [685, 602, 502, 418]],
+           linewidth=3, color=color_1, label='ITRPV')
+
+# #Vartiainen
 ax3.plot([2020, 2025, 2030, 2035, 2040, 2045, 2050], 
           [x/1000 for x in [431, 333, 275, 235, 204, 181, 164]],
           linewidth=3, color=color_1,label='Vartiainen 2019')
+
 #IRENA
 ax3.plot([2019], 
           [995/1000],
@@ -276,8 +285,27 @@ ax3.text(2040, 2.2, 'IAMs', fontsize=12)
 ax3.annotate('PRIMES', xy=(2038, 0.6), xytext=(2042, 0.7), color=color_2,
             arrowprops=dict(color=color_2, headwidth=0.1, width=0.1),)
 
-ax3.annotate('ITPV', xy=(2030, 0.25), xytext=(2020, 0.1), color=color_1,
+ax3.annotate('Vartiainen [ref]', xy=(2030, 0.25), xytext=(2020, 0.1), color=color_1,
+              arrowprops=dict(color=color_1, headwidth=0.1, width=0.1))
+
+ax3.annotate('ITRPV', xy=(2022, 0.54), xytext=(2012, 0.35), color=color_1,
              arrowprops=dict(color=color_1, headwidth=0.1, width=0.1))
+
+# color_10='blue'
+# ILR=1.34 #Inverter Loading Ratio
+# ax3.plot([2019, 2030, 2040, 2050], 
+#           [Dollar2Euro*x/(1000*ILR) for x in [1375, 673, 590, 507]],
+#           linewidth=3, color=color_10, #linestyle='dashed',
+#           label='NREL Advanced')
+# ax3.plot([2019, 2030, 2040, 2050], 
+#           [Dollar2Euro*x/(1000*ILR) for x in [1375, 819, 746, 673]],
+#           linewidth=3, color=color_10, linestyle='dotted',
+#           label='NREL Moderate')
+# ax3.plot([2019, 2030, 2040, 2050], 
+#           [Dollar2Euro*x/(1000*ILR) for x in [1375, 1197, 1008, 819]],
+#           linewidth=3, color=color_10, linestyle='dashed',
+#           label='NREL Conservative')
+
 
 """
 FIGURE F) USE OF SILVER
