@@ -98,12 +98,12 @@ ax0.set_xticklabels(['Solar', 'Wind', 'BECCS',
                      'Solar', 'Wind', 'BECCS',  ], fontsize=14)
 
 ax0.set_ylim([0, 250])
-ax0.annotate('IPCC 5$^{th}$ AR [ref]', xy=(0.25, 0.89), xytext=(0.25, 0.94), 
+ax0.annotate('IPCC 5$^{th}$ AR [18]', xy=(0.25, 0.89), xytext=(0.25, 0.94), 
             xycoords='axes fraction', 
             fontsize=14, ha='center', va='bottom',
             #bbox=dict(boxstyle='square', fc='white'),
             arrowprops=dict(arrowstyle='-[, widthB=8.0, lengthB=0.5', lw=2.0))
-ax0.annotate('IPCC 1.5$^{\circ}$C SR [ref]', xy=(0.75, 0.89), xytext=(0.75, 0.94), 
+ax0.annotate('IPCC 1.5$^{\circ}$C SR [19]', xy=(0.75, 0.89), xytext=(0.75, 0.94), 
             xycoords='axes fraction', 
             fontsize=14, ha='center', va='bottom',
             #bbox=dict(boxstyle='square', fc='white'),

@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 idx = pd.IndexSlice
 
-document='IPCC_AR5'
+document='IPCC_SR1.5'
 option='primary energy'
 year='2050'
 region='World'
@@ -153,13 +153,13 @@ if option=='electricity':
     for EUscenario in ['Baseline','EE', 'CIRC', 'ELEC', 'H2', 'P2X', 'COMBO', '1.5TECH', '1.5LIFE', ]:
         ax1.plot(penetration.loc[EUscenario,'solar'], penetration.loc[EUscenario,'wind'], 
                  marker='o', markersize=10, markerfacecolor=(1,1,1,0), markeredgecolor='black')
-    ax1.text(10, 55, 'PRIMES [ref]', color='black', fontsize=12)
+    ax1.text(10, 55, 'PRIMES [24]', color='black', fontsize=12)
 
     #PRIMES (Stepping-up)
     for EUscenario in ['BSL','REG', 'MIX', 'CPRICE', 'ALLBNK' ]:
         ax1.plot(penetration.loc[EUscenario,'solar'], penetration.loc[EUscenario,'wind'], 
                  marker='o', markersize=10, color='black')
-    ax1.text(15, 38, 'PRIMES [ref]', color='black', fontsize=12)
+    ax1.text(15, 38, 'PRIMES [28]', color='black', fontsize=12)
 
 
     #ENTSOE
@@ -184,27 +184,27 @@ if option=='electricity':
     #Victoria
     ax1.plot(penetration.loc['Victoria','solar'], penetration.loc['Victoria','wind'], 
                   marker='o', markersize=10, color=color_1) 
-    ax1.text(40, 42, 'Victoria [ref]', color=color_1, fontsize=12)
+    ax1.text(40, 42, 'Victoria [82]', color=color_1, fontsize=12)
 
     #Child
     ax1.plot(penetration.loc['Child','solar'], penetration.loc['Child','wind'], 
               marker='o', markersize=10,  markeredgecolor=color_1,
                   markerfacecolor=color_1) 
-    ax1.text(41, 31, 'Child [ref]', color=color_1, fontsize=11)
+    ax1.text(41, 31, 'Child [84]', color=color_1, fontsize=11)
 
     #Bogdanov
     ax1.plot(penetration.loc['Bogdanov','solar'], penetration.loc['Bogdanov','wind'], 
                   marker='s', markersize=10, 
                   markeredgecolor=color_1,
                   markerfacecolor='white') 
-    ax1.text(62, 16, 'Bogdanov [ref]', color=color_1, fontsize=12)
+    ax1.text(62, 16, 'Bogdanov [83]', color=color_1, fontsize=12)
    
     #Solar Power Europe
     ax1.plot(penetration.loc['SolarPower','solar'], penetration.loc['SolarPower','wind'], 
                   marker='o', markersize=10, 
                   markeredgecolor=color_1,
                   markerfacecolor=color_1) 
-    ax1.text(57.5, 29, 'SPE [ref]', color=color_1, fontsize=12)
+    ax1.text(57.5, 29, 'SPE [92]', color=color_1, fontsize=12)
     
     
     #Pursiheimo
@@ -212,19 +212,20 @@ if option=='electricity':
                   marker='s', markersize=10, 
                   markeredgecolor='black',
                   markerfacecolor='white') 
-    ax1.text(69, 8, 'Pursiheimo [ref]', color='black', fontsize=12)
+    ax1.text(69, 8, 'Pursiheimo [88]', color='black', fontsize=12)
     
     #Jacobson
     ax1.plot(penetration.loc['Jacobson','solar'], penetration.loc['Jacobson','wind'], 
                   marker='s', markersize=10, 
                   markeredgecolor='black',
                   markerfacecolor='white') 
-    ax1.text(42, 33.5, 'Jacobson [ref]', color='black', fontsize=11)
+    ax1.text(42, 33.5, 'Jacobson [89]', color='black', fontsize=11)
     
     #Creutzig
     ax1.annotate("", xy=(30, 4), xytext=(50,4),
                  arrowprops=dict(arrowstyle="<->", color='black'))
-    ax1.text(32, 1.5, 'Creutzig [ref]', color='black', fontsize=12)
+    ax1.text(32, 1.5, 'Creutzig [12]', color='black', fontsize=12)
 
 
-plt.savefig('figures/pv_and_wind_in_IAM_' + option + '_' + document + '.png', dpi=300, bbox_inches='tight')
+plt.savefig('figures/pv_and_wind_in_IAM_' + option + '_' + document + '.png', 
+            dpi=600, bbox_inches='tight')

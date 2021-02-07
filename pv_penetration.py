@@ -153,7 +153,7 @@ for country in countries:#df.index:
 ax1.set_ylabel('Electricity demand covered by solar PV (%)', fontsize=14)    
 ax1.grid(color='grey', linestyle='--', axis='y')
 ax1.set_xlim(-0.5, 2.5)
-ax1.set_ylim(0, 26)
+ax1.set_ylim(0, 24)
 #ax1.legend(fancybox=True, fontsize=16, loc=(0.02,0.4), facecolor='white', frameon=True)
 
 bus_size_factor=10000*scale
@@ -174,4 +174,4 @@ l2 = ax1.legend(handles, labels,
                 fontsize=14,
                 handler_map=make_handler_map_to_scale_circles_as_in(ax1))
 ax1.add_artist(l2)
-plt.savefig('figures/pv_penetration.png', dpi=300, bbox_inches='tight')  
+plt.savefig('figures/pv_penetration.png', dpi=600, bbox_inches='tight')  
