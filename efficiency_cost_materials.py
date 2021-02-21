@@ -109,9 +109,9 @@ ax0.text(0.45, 1.01, 'A', transform=ax0.transAxes, fontsize=14)
 ax0.set_xticks([1, 2, 3, 4, 5])
 ax0.set_xticklabels(['IPCC \n5$^{th}$AR \n[8]', 
                      'IPCC \nSR1.5$^{\circ}$C \n[9]', 
-                     'Kurtz \n[125]',
+                     'Kurtz \n[14]',
                      'Haegel \n[6]', 
-                     'Breyer \n[83,120]',], fontsize=12)
+                     'Breyer \n[86,123]',], fontsize=12)
 
 ax0.set_ylim([0, 100])
 
@@ -285,7 +285,7 @@ ax3.text(2040, 2.2, 'IAMs', fontsize=12)
 ax3.annotate('PRIMES [24]', xy=(2045, 0.55), xytext=(2038, 0.7), color=color_2,
             arrowprops=dict(color=color_2, headwidth=0.1, width=0.1),)
 
-ax3.annotate('Vartiainen [36]', xy=(2030, 0.25), xytext=(2020, 0.1), color=color_1,
+ax3.annotate('Vartiainen [38]', xy=(2030, 0.25), xytext=(2020, 0.1), color=color_1,
               arrowprops=dict(color=color_1, headwidth=0.1, width=0.1))
 
 ax3.annotate('ITRPV', xy=(2022, 0.54), xytext=(2012, 0.35), color=color_1,
