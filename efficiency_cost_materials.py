@@ -111,7 +111,7 @@ ax0.set_xticklabels(['IPCC \n5$^{th}$AR \n[8]',
                      'IPCC \nSR1.5$^{\circ}$C \n[9]', 
                      'Kurtz \n[14]',
                      'Haegel \n[6]', 
-                     'Breyer \n[86,123]',], fontsize=12)
+                     'Breyer \n[87,125]',], fontsize=12)
 
 ax0.set_ylim([0, 100])
 
