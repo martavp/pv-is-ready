@@ -16,8 +16,8 @@ plt.rcParams['xtick.labelsize'] = 14
 plt.rcParams['ytick.labelsize'] = 14
 plt.rcParams['xtick.direction'] = 'in'
 plt.rcParams['ytick.direction'] = 'in'
+plt.rcParams['font.family'] = 'avenir'
 plt.rcParams['axes.titlesize'] = 14
-
 plt.figure(figsize=(10, 8))
 gs1 = gridspec.GridSpec(1, 1)
 
@@ -72,8 +72,7 @@ for i,document in enumerate(['IPCC_AR5', 'IPCC_SR1.5']):
     data_to_plot.append(BECCS_generation)
 
 #Electricity produced with biomass is equivalent to (1/0.3) primary energy
-data_to_plot[5]=[(1/0.3)*s for s in data_to_plot[5]]
-#ax0.set_ylabel('Global electricity in 2050 (PWh/year)', fontsize=14)    
+data_to_plot[5]=[(1/0.3)*s for s in data_to_plot[5]]    
 ax0.set_ylabel('Global primary energy in 2050 (EJ/year)', fontsize=14) 
 parts=ax0.violinplot(data_to_plot, 
                      showmedians=False, 
@@ -101,12 +100,10 @@ ax0.set_ylim([0, 250])
 ax0.annotate('IPCC 5$^{th}$ AR [18]', xy=(0.25, 0.89), xytext=(0.25, 0.94), 
             xycoords='axes fraction', 
             fontsize=14, ha='center', va='bottom',
-            #bbox=dict(boxstyle='square', fc='white'),
             arrowprops=dict(arrowstyle='-[, widthB=8.0, lengthB=0.5', lw=2.0))
 ax0.annotate('IPCC 1.5$^{\circ}$C SR [19]', xy=(0.75, 0.89), xytext=(0.75, 0.94), 
             xycoords='axes fraction', 
             fontsize=14, ha='center', va='bottom',
-            #bbox=dict(boxstyle='square', fc='white'),
             arrowprops=dict(arrowstyle='-[, widthB=8.0, lengthB=0.5', lw=2.0))
 plt.savefig('figures/primary_solar_wind_BECCS.png', 
             dpi=300, 

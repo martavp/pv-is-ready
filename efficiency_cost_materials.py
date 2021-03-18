@@ -16,8 +16,8 @@ plt.rcParams['xtick.labelsize'] = 14
 plt.rcParams['ytick.labelsize'] = 14
 plt.rcParams['xtick.direction'] = 'in'
 plt.rcParams['ytick.direction'] = 'in'
+plt.rcParams['font.family'] = 'Avenir'
 plt.rcParams['axes.titlesize'] = 14
-
 plt.figure(figsize=(20, 10))
 gs1 = gridspec.GridSpec(2, 4)
 gs1.update(wspace=0.4, hspace=0.3)
@@ -92,7 +92,6 @@ ax0.plot([5, 5],
           marker='_',
           markersize=14,)
 
-
 parts=ax0.violinplot(data_to_plot, 
                      showmedians=False, 
                      showextrema=False, 
@@ -104,7 +103,6 @@ for pc in parts['bodies']:
     pc.set_alpha(1)
     
 
-
 ax0.text(0.45, 1.01, 'A', transform=ax0.transAxes, fontsize=14)
 ax0.set_xticks([1, 2, 3, 4, 5])
 ax0.set_xticklabels(['IPCC \n5$^{th}$AR \n[8]', 
@@ -112,7 +110,6 @@ ax0.set_xticklabels(['IPCC \n5$^{th}$AR \n[8]',
                      'Kurtz \n[14]',
                      'Haegel \n[6]', 
                      'Breyer \n[87,125]',], fontsize=12)
-
 ax0.set_ylim([0, 100])
 
 #%%
@@ -168,7 +165,7 @@ ax1.set_xlim(2005, 2045)
 ax1.text(2027, 26.5, '?', 
          fontsize=60,
          color='silver')
-ax1.text(2023, 27, 'multijunction \n   perovskite', 
+ax1.text(2022, 27, 'multijunction \n   perovskite', 
          fontsize=14,
              color=color_1)
 ax1.set_xlim([2005, 2035])
@@ -179,14 +176,14 @@ ax1.legend(fancybox='true',
            frameon=True,
            edgecolor='black')
 ax1.text(0.45, 1.01, 'D', transform=ax1.transAxes, fontsize=14)
-
-# B) LEARNING CURVE
-
+#%%
+"""
+Figure B) LEARNING CURVE
+"""
 ax2 = plt.subplot(gs1[0,1])
 ax2.loglog(cost['volume'], cost['cost'],
            marker='o', markerfacecolor=color_1,
          linewidth=0, color=color_1)
-
 ax2.set_ylabel('Module price (USD2019/W$_p$)', fontsize=14)    
 ax2.set_xlabel('Cumulative PV capacity (MW)', fontsize=14)  
 ax2.grid(color='grey', linestyle='--', axis='both', which='both')
@@ -205,8 +202,8 @@ ax2.text(200000, 1.1, '40%', fontsize=14, color='dimgray')
 FIGURE C) COST FORECAST
 """
 
-# IAM cost assumption: Krey 2019
-# IRENA: average cost 995€/kW, cost in USA 1221 €/kW
+# IAM cost assumption: Krey 2019 for Europe
+# IRENA: average cost 995€/kW
 
 ax3 = plt.subplot(gs1[0,2])
 
@@ -240,19 +237,13 @@ ax3.plot([2020, 2030, 2040, 2050],
           [x/1000 for x in [721, 690, 567, 495]],
           linewidth=3, color=color_2, linestyle='dashed', label='PRIMES')
 
-#ETIP-PV 2017
-# ax3.plot([2020,2030, 2040, 2050], 
-#           [x/1000 for x in [573, 391, 302, 246]],
-#           linewidth=3, color=color_1, label='ETIP-PV2017')
-
-
 #ITRPV 2020
 Dollar2Euro=0.82
 ax3.plot([2020, 2024, 2027, 2030], 
            [Dollar2Euro*x/1000 for x in [685, 602, 502, 418]],
            linewidth=3, color=color_1, label='ITRPV')
 
-# #Vartiainen
+#Vartiainen
 ax3.plot([2020, 2025, 2030, 2035, 2040, 2045, 2050], 
           [x/1000 for x in [431, 333, 275, 235, 204, 181, 164]],
           linewidth=3, color=color_1,label='Vartiainen 2019')
@@ -291,20 +282,6 @@ ax3.annotate('Vartiainen [38]', xy=(2030, 0.25), xytext=(2020, 0.1), color=color
 ax3.annotate('ITRPV', xy=(2022, 0.54), xytext=(2012, 0.35), color=color_1,
              arrowprops=dict(color=color_1, headwidth=0.1, width=0.1))
 
-# color_10='blue'
-# ILR=1.34 #Inverter Loading Ratio
-# ax3.plot([2019, 2030, 2040, 2050], 
-#           [Dollar2Euro*x/(1000*ILR) for x in [1375, 673, 590, 507]],
-#           linewidth=3, color=color_10, #linestyle='dashed',
-#           label='NREL Advanced')
-# ax3.plot([2019, 2030, 2040, 2050], 
-#           [Dollar2Euro*x/(1000*ILR) for x in [1375, 819, 746, 673]],
-#           linewidth=3, color=color_10, linestyle='dotted',
-#           label='NREL Moderate')
-# ax3.plot([2019, 2030, 2040, 2050], 
-#           [Dollar2Euro*x/(1000*ILR) for x in [1375, 1197, 1008, 819]],
-#           linewidth=3, color=color_10, linestyle='dashed',
-#           label='NREL Conservative')
 
 
 """
@@ -347,15 +324,14 @@ ax5.bar(range(len(annual_capacity)),
 ax5.plot([-6, -6],[0,110], 
          linewidth=65, 
          color=color_1, alpha=0.3)
-ax5.text(-1.5, 45, 'expected \n lifetime', fontsize=14, color=color_1)
+ax5.text(-0.5, 45, 'expected \n lifetime', fontsize=14, color=color_1)
 ax5.set_xlabel('Years from installation')
 ax5.set_ylabel('Capacity (GW)')
 ax5.set_xticks([-11, -6, -1, 4, 9, 14, 19])
 ax5.set_xticklabels(['35', '30','25', '20', '15', '10', '5'])
 ax5.set_xlim(24,-11)
 ax5.set_ylim(0,105)
-#ax5.set_yscale('log')
 ax5.text(0.45, 1.01, 'E', transform=ax5.transAxes, fontsize=14)
-plt.savefig('figures/cost_efficiency.png', 
-            dpi=600, 
+plt.savefig('figures/cost_efficiency.tiff', 
+            dpi=220, 
             bbox_inches='tight')  

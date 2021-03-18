@@ -7,8 +7,6 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
-
-
 from matplotlib.legend_handler import HandlerPatch
 from matplotlib.patches import Circle, Ellipse
 
@@ -50,12 +48,9 @@ plt.rcParams['xtick.labelsize'] = 14
 plt.rcParams['ytick.labelsize'] = 14
 plt.rcParams['xtick.direction'] = 'in'
 plt.rcParams['ytick.direction'] = 'in'
-#params = {'legend.fontsize': 20,
-#          'legend.handlelength': 2}
-#plot.rcParams.update(params)
-
+plt.rcParams['font.family'] = 'avenir'
 plt.rcParams['axes.titlesize'] = 14
-plt.figure(figsize=(10,10))
+plt.figure(figsize=(9,9))
 gs1 = gridspec.GridSpec(1, 1)
 gs1.update(wspace=0.2, hspace=0.2)
 
@@ -72,7 +67,7 @@ colors={'Spain': 'firebrick',
         'California': 'gold',
         'UK':'darkblue',
         'Honduras':'black',
-        'China':'lightblue', #'aliceblue',
+        'China':'lightblue',
         'India':'gray',
         'Japan':'darkorange',
         'Italy':'yellowgreen',
@@ -80,38 +75,35 @@ colors={'Spain': 'firebrick',
         'Hawaii':'brown',
         'Chile':'violet',
         'South Australia':'darkcyan'}
-xpos={  
-        'Spain': 0,
+xpos = {'Spain': 0.02,
         'Germany': 0,       
         'California': 0,
         'UK':0,
         'Honduras':0,
-        'China':0.3,
-        'India':0.02,
-        'Japan':0,
+        'China':0.33,
+        'India':0.05,
+        'Japan':0.02,
         'Italy':0,
-        'Australia':0,
+        'Australia':0.01,
         'Hawaii':0,
         'Chile':0,
         'South Australia':0}
 
-ypos={  
-        'Spain': 0,
+ypos = {'Spain': 0,
         'Germany': 0.4,       
         'California': -0.5,
-        'UK':0.7,
+        'UK':0.5,
         'Honduras':0.1,
         'China':0,
         'India':-0.7,
-        'Japan':0,
+        'Japan':0.1,
         'Italy':0,
-        'Australia':-0.1,
+        'Australia':-0.15,
         'Hawaii':-0.3,
         'Chile':-0.4,
         'South Australia':-0.3}
 
-countries=[
-           'China',
+countries=['China',
            'India',
            'Japan',
            'Germany',
@@ -127,36 +119,24 @@ countries=[
 face_colors={}
 markeredgewidth={}
 scale=4
-for country in countries:#df.index:
+for country in countries:
     face_colors[country]=colors[country] if country not in ['*China'] else 'None'
     markeredgewidth[country]=0 if country not in ['*China'] else 3
     ax1.scatter(years[0:3], 
              df.loc[country,years][0:3], 
              scale*df.loc[country,'Annual electricity demand (TWh)'],
-             #linewidth=0, 
-             #linestyle='--', 
              alpha=0.8, 
-             #marker='o', 
-             color=colors[country],
-             #markerfacecolor=face_colors[country],
-             #markeredgecolor=colors[country],
-             #markeredgewidth=markeredgewidth[country],
-             #markersize=scale*df.loc[country,'Annual electricity demand (TWh)'],
+             edgecolor=None,
+             facecolor=colors[country],
              label=country)
-    # ax1.plot(years[2], df.loc[country,years][2], linewidth=0, linestyle='--', 
-    #          alpha=0.5, marker='o', markerfacecolor=colors[country],
-    #          markeredgecolor=colors[country],
-    #          markersize=scale*df.loc[country,'Annual electricity demand (TWh)'],
-    #          label=country)
-    ax1.text(1.2+xpos[country], df.loc[country, '2019']+ ypos[country], country, fontsize=14,
-             color=colors[country])
+    ax1.text(1.2+xpos[country], df.loc[country, '2019']+ ypos[country], 
+             country, fontsize=14, color=colors[country])
 ax1.set_ylabel('Electricity demand covered by solar PV (%)', fontsize=14)    
 ax1.grid(color='grey', linestyle='--', axis='y')
 ax1.set_xlim(-0.5, 2.5)
 ax1.set_ylim(0, 24)
-#ax1.legend(fancybox=True, fontsize=16, loc=(0.02,0.4), facecolor='white', frameon=True)
 
-bus_size_factor=10000*scale
+bus_size_factor=10000/1.4*scale
 handles = make_legend_circles_for([500, 250], 
                                   scale=bus_size_factor, 
                                   facecolor='white',
@@ -166,12 +146,10 @@ l2 = ax1.legend(handles, labels,
                 frameon=True,
                 edgecolor='black',
                 loc='upper left',                
-                #bbox_to_anchor=(0.01, 1.01),
                 labelspacing=2.,
                 borderpad=1.25,
                 framealpha=1.,
-                #title='Annual demand', prop = {'size':14},
                 fontsize=14,
                 handler_map=make_handler_map_to_scale_circles_as_in(ax1))
 ax1.add_artist(l2)
-plt.savefig('figures/pv_penetration.png', dpi=600, bbox_inches='tight')  
+plt.savefig('figures/pv_penetration.tiff', dpi=300, bbox_inches='tight')  

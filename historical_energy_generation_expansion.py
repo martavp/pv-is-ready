@@ -11,14 +11,13 @@ import matplotlib as mpl
 import numpy as np
 
 
-
 plt.style.use('seaborn-ticks')
 plt.rcParams['axes.labelsize'] = 14
 plt.rcParams['xtick.labelsize'] = 14
 plt.rcParams['ytick.labelsize'] = 14
 plt.rcParams['xtick.direction'] = 'in'
 plt.rcParams['ytick.direction'] = 'in'
-
+plt.rcParams['font.family'] = 'avenir'
 plt.rcParams['axes.titlesize'] = 14
 plt.figure(figsize=(8, 8))
 gs1 = gridspec.GridSpec(1, 1)
@@ -48,7 +47,7 @@ for tech in ['Coal', 'Gas', 'Hydro', 'Nuclear',
         global_generation_2019 = 1429.6 #TWh
         global_capacity_2019 = 622704 # MW
         energy=excel.loc['Total World'][0:24]*global_generation_2019/global_capacity_2019  #MW -> TWh
-        #review 2000 eq. hours assumed for wind
+
     
     if tech in ['Geo Biomass Other']:
         excel = pd.read_excel('data/bp-stats-review-2020-all-data.xlsx', 
@@ -76,7 +75,6 @@ ax1.set_ylabel('Global electricity generation (TWh)', fontsize=18)
 ax1.grid(color='grey', linestyle='--', axis='y', which='both')
 ax1.set_ylim(10, 11000)
 ax1.set_xlim(1968, 2022)
-#ax1.legend(fancybox=True, fontsize=16, loc=(1.01, 0.), facecolor='white', frameon=True)
 ax1.text(2009, 15, 'Solar PV', color=colors['Solar'], fontsize=14)
 ax1.text(1992, 15, 'Wind', color=colors['Wind'], fontsize=14)
 ax1.text(1975, 220, 'Nuclear', color=colors['Nuclear'], fontsize=14)
@@ -84,4 +82,4 @@ ax1.text(1990, 5000, 'Coal', color=colors['Coal'], fontsize=14)
 ax1.text(1970, 1500, 'Hydro', color=colors['Hydro'], fontsize=14)
 ax1.text(1990, 1400, 'Gas', color=colors['Gas'], fontsize=14)
 
-plt.savefig('figures/historical_energy_generation_expansion.png', dpi=300, bbox_inches='tight')  
+plt.savefig('figures/historical_energy_generation_expansion.tiff', dpi=300, bbox_inches='tight')  

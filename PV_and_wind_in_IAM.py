@@ -10,14 +10,11 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 idx = pd.IndexSlice
 
-document='IPCC_SR1.5'
-option='electricity'
+document='IPCC_SR1.5' #select 'IPCC_SR1.5' or 'IPCC_AR5'
+option='electricity'  #select 'electricity' or 'primary energy'
 year='2050'
 region='World'
-# temp threshold, only plots scenario with lower tempt
-# (currently not in use)
-T_threshold=10 
-
+ 
 
 if document=='IPCC_AR5':
     #https://tntcat.iiasa.ac.at/AR5DB/
@@ -41,8 +38,8 @@ plt.rcParams['xtick.labelsize'] = 14
 plt.rcParams['ytick.labelsize'] = 14
 plt.rcParams['xtick.direction'] = 'in'
 plt.rcParams['ytick.direction'] = 'in'
+plt.rcParams['font.family'] = 'avenir'
 plt.rcParams['axes.titlesize'] = 14
-
 plt.figure(figsize=(8, 8))
 gs1 = gridspec.GridSpec(1, 1)
 gs1.update(wspace=0.2, hspace=0.2)
@@ -50,7 +47,6 @@ gs1.update(wspace=0.2, hspace=0.2)
 ax1 = plt.subplot(gs1[0,0])
 ax1.spines['right'].set_visible(False)
 ax1.spines['top'].set_visible(False)
-
 color_0='orange'
 color_1='firebrick'
 color_2='dodgerblue'
@@ -59,8 +55,6 @@ ax1.set_ylim([0,100])
 ax1.set_xlim([0,100])
 ax1.set_xlabel('Solar penetration (%)')
 ax1.set_ylabel('Wind penetration (%)')
-ax1.text(35.5, 35.5, '100% wind & solar ' + option, rotation=-45, 
-         color=color_0, fontsize=16)
 
 
 #%%
@@ -89,19 +83,16 @@ solar_ratio=[]
 wind_ratio=[]
 solar_generation=[]
 for scenario in scenarios_clean:
-    #print(scenario)
     scenario_df=df.loc[idx[:,scenario,region,:],year].unstack(['VARIABLE','UNIT'])
     if option=='electricity':        
         # Calculate the solar and wind share in electricity, only if temperature  
-        # is included in the scenario and it is below T_threshold
+        # is included in the scenario 
         ratio = [[100*(solar/total).item(), 100*(wind/total).item()] for solar,wind,total,temperature in 
                       zip(scenario_df['Secondary Energy|Electricity|Solar'].values,
                           scenario_df['Secondary Energy|Electricity|Wind'].values,
                           scenario_df['Secondary Energy|Electricity'].values,
-                          scenario_df[Temperature_parameter].values)
-                      ]#if ( np.isnan(temperature)==False and temperature<T_threshold)]
-        solar_generation = solar_generation + [s for s in scenario_df['Secondary Energy|Electricity|Solar']['EJ/yr'].values]
-    
+                          scenario_df[Temperature_parameter].values)]
+        solar_generation = solar_generation + [s for s in scenario_df['Secondary Energy|Electricity|Solar']['EJ/yr'].values]    
         ax1.plot([r[0] for r in ratio], [r[1] for r in ratio], marker='s', markersize=10, 
                  markerfacecolor=(1,1,1,0),  linewidth=0,
                  markeredgecolor='gray')
@@ -116,13 +107,12 @@ for scenario in scenarios_clean:
                   zip(scenario_df['Secondary Energy|Electricity|Solar'].values,
                       scenario_df['Secondary Energy|Electricity|Wind'].values,
                       scenario_df['Primary Energy'].values,
-                      scenario_df[Temperature_parameter].values)
-                  ]#if ( np.isnan(temperature)==False and temperature<T_threshold)]
+                      scenario_df[Temperature_parameter].values)]
         
         ax1.plot([r[0] for r in ratio], [r[1] for r in ratio], marker='s', markersize=10, 
                  markerfacecolor=(1,1,1,0),  linewidth=0,
                  markeredgecolor='gray')
-                #save solar and wind ratios
+        #save solar and wind ratios
         solar_ratio=solar_ratio + [r[0] for r in ratio]
         wind_ratio=wind_ratio + [r[1] for r in ratio]
 
@@ -141,9 +131,21 @@ if option=='electricity':
     print('max solar generation = ' + str(np.array(solar_generation).max()) + 'EJ/yr')
     print('min solar generation = ' + str(np.array(solar_generation).min()) + 'EJ/yr') 
 
+### Plot solar and wind electricity from other references
 penetration=pd.read_csv('data/solar_wind_electricity_penetration.csv', 
                        index_col=0, sep=',')
-if option=='electricity':
+if option=='primary energy':
+    ax1.text(30, 30, '100% wind & solar ' + option, rotation=-45, 
+         color=color_0, fontsize=16)
+    if document=='IPCC_AR5':
+        ax1.text(24, 8, 'IPCC 5$^{th}$AR', color='dimgray', fontsize=12)
+    
+    if document=='IPCC_SR1.5':
+        ax1.text(33, 8, 'IPCC SR 1.5$^{\circ}$C', color='dimgray', fontsize=12)
+    
+if option=='electricity':   
+    ax1.text(35.5, 35.5, '100% wind & solar ' + option, rotation=-45, 
+         color=color_0, fontsize=16)
     if document=='IPCC_AR5':
         ax1.text(18, 8, 'IPCC 5$^{th}$AR', color='dimgray', fontsize=12)
     
@@ -160,7 +162,6 @@ if option=='electricity':
         ax1.plot(penetration.loc[EUscenario,'solar'], penetration.loc[EUscenario,'wind'], 
                  marker='o', markersize=10, color='black')
     ax1.text(15, 38, 'PRIMES [29]', color='black', fontsize=12)
-
 
     #ENTSOE
     ax1.plot(penetration.loc['ENTSOE','solar'], penetration.loc['ENTSOE','wind'], 
@@ -184,7 +185,7 @@ if option=='electricity':
     #Victoria
     ax1.plot(penetration.loc['Victoria','solar'], penetration.loc['Victoria','wind'], 
                   marker='o', markersize=10, color=color_1) 
-    ax1.text(40, 42, 'Victoria [86]', color=color_1, fontsize=12)
+    ax1.text(39, 42, 'Victoria [86]', color=color_1, fontsize=12)
 
     #Child
     ax1.plot(penetration.loc['Child','solar'], penetration.loc['Child','wind'], 
@@ -197,7 +198,7 @@ if option=='electricity':
                   marker='s', markersize=10, 
                   markeredgecolor=color_1,
                   markerfacecolor='white') 
-    ax1.text(62, 16, 'Bogdanov [87]', color=color_1, fontsize=12)
+    ax1.text(61, 16, 'Bogdanov [87]', color=color_1, fontsize=12)
    
     #Solar Power Europe
     ax1.plot(penetration.loc['SolarPower','solar'], penetration.loc['SolarPower','wind'], 
@@ -206,26 +207,27 @@ if option=='electricity':
                   markerfacecolor=color_1) 
     ax1.text(57.5, 29, 'SPE [96]', color=color_1, fontsize=12)
     
-    
     #Pursiheimo
     ax1.plot(penetration.loc['Pursiheimo','solar'], penetration.loc['Pursiheimo','wind'], 
                   marker='s', markersize=10, 
                   markeredgecolor='black',
                   markerfacecolor='white') 
-    ax1.text(69, 8, 'Pursiheimo [92]', color='black', fontsize=12)
+    ax1.text(68, 8, 'Pursiheimo [92]', color='black', fontsize=12)
     
     #Jacobson
     ax1.plot(penetration.loc['Jacobson','solar'], penetration.loc['Jacobson','wind'], 
                   marker='s', markersize=10, 
                   markeredgecolor='black',
                   markerfacecolor='white') 
-    ax1.text(42, 33.5, 'Jacobson [93]', color='black', fontsize=11)
+    ax1.text(42, 33.5, 'Jacobson [127]', color='black', fontsize=11)
     
     #Creutzig
     ax1.annotate("", xy=(30, 4), xytext=(50,4),
                  arrowprops=dict(arrowstyle="<->", color='black'))
-    ax1.text(32, 1.5, 'Creutzig [12]', color='black', fontsize=12)
+    ax1.text(31, 1.2, 'Creutzig [12]', color='black', fontsize=12)
 
 
+# plt.savefig('figures/pv_and_wind_in_IAM_' + option + '_' + document + '.tiff', 
+#             dpi=300, bbox_inches='tight')
 plt.savefig('figures/pv_and_wind_in_IAM_' + option + '_' + document + '.png', 
-            dpi=600, bbox_inches='tight')
+             dpi=600, bbox_inches='tight')    
